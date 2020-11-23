@@ -1,6 +1,7 @@
 import streamlit as st
 from monkeylearn import MonkeyLearn
 from io import StringIO
+import time
 
 def app():
 	st.title('Named Entity Recognization')
@@ -16,13 +17,20 @@ def app():
 
 	if st.button('Execute'):
 		ml = MonkeyLearn('b5c3a529126d072f0aa6d43003083ffdc3273a7f')
-		model_id = 'ex_SmwSdZ3C'
-		if uploaded_file is not None:
-			response = ml.extractors.extract(model_id, data=[file_text])
-		else:
-			response = ml.extractors.extract(model_id, data=[text])
-		outputs = response.body[0]['extractions']
-		st.write('PERSON : ')
-		for output in outputs:
-			st.write('         ', output['extracted_text'])
+		models = ['ex_SmwSdZ3C', 'ex_vqBQ7V9B', 'ex_A9nCcXfn']
+		model_name = ['PERSON','LOCATION', 'COMPANY']
+		responses = [None for _ in range(len(models))]
+		outputs = [None for _ in range(len(models))]
+		with st.spinner('Extracting...'):
+			if uploaded_file is not None:
+				data = file_text
+			else:
+				data = text
+			for idx, model_id in enumerate(models):
+				responses[idx] = ml.extractors.extract(model_id, data=[data])
+				outputs[idx] = responses[idx].body[0]['extractions']
+		for idx,output in enumerate(outputs):
+			st.write(model_name[idx], ' :')
+			for item in output:
+				st.write(item['extracted_text'])
 		

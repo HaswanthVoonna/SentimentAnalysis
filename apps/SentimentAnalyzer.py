@@ -24,7 +24,7 @@ def app():
 			else:
 				response = ml.classifiers.classify(model_id, [text])
 			outputs = response.body[0]['classifications'][0]
-		st.write('The model is are quite sure the sentence is', outputs['tag_name'],'. (', outputs["confidence"], ' %)')
+		st.write('The model is are quite sure the sentence is', outputs['tag_name'],'. (', outputs["confidence"]*100, ' %)')
 
 
 
